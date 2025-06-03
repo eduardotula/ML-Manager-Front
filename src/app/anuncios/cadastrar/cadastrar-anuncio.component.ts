@@ -13,6 +13,7 @@ import { MercadoLivreService } from 'src/app/services/mercado-livre.service';
 import { Anuncio } from 'src/app/services/models/Anuncio';
 import { AnuncioSimple } from 'src/app/services/models/AnuncioSimple';
 import { MercadoLivreAnuncio } from 'src/app/services/models/MercadoLivreAnuncio';
+import { UsersServices } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-cadastrar-anuncio',
@@ -41,7 +42,7 @@ export class CadastrarAnuncioComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, public service: AnuncioService, public lsUser: UserLSService,
     public route: ActivatedRoute, public router: Router, private mlService: MercadoLivreService, private dialog: MatDialog,
-    private mlImageService: ImageMLService) {
+    private mlImageService: ImageMLService, private userService: UsersServices) {
 
     this.currentUserId = this.lsUser.getCurrentUser();
     this.filterForm = this.formBuilder.group({
@@ -143,33 +144,48 @@ export class CadastrarAnuncioComponent implements OnInit {
 
   setMercadoLivreAnuncios(ids: string[]) {
     var anuncioObser: Observable<MercadoLivreAnuncio>[] = [];
-    ids.forEach(id => anuncioObser.push(this.mlService.getAnuncioByMlId(id)))
-    forkJoin(anuncioObser).subscribe({
-      next: (mercadoLivreAnuncio) => {
-        this.dataSource.data = mercadoLivreAnuncio;
-        this.dataSource.sort = this.sort;
 
-        mercadoLivreAnuncio.forEach(mlanuncio => {
+    this.userService.getAll().subscribe({
+      next: (users) => {
+        var auth = ""
 
-          if (mlanuncio.pictures && mlanuncio.pictures.length > 0) {
-            this.mlImageService.getImage(mlanuncio.pictures[0].url).subscribe({
-              next: (imgBlob) => {
-                this.anuncioImages.addImage(mlanuncio, imgBlob);
-                this.loading = false;
-              },
-              error: (error) => {
-                this.loading = false;
-                this.errorMsg = error.message;
+        users.forEach((userLoop => {
+          if(userLoop.id == this.currentUserId) auth = userLoop.accessCode;
+        }))
+
+        ids.forEach(id => anuncioObser.push(this.mlService.getAnuncioByMlId(id, auth)))
+        forkJoin(anuncioObser).subscribe({
+          next: (mercadoLivreAnuncio) => {
+            this.dataSource.data = mercadoLivreAnuncio;
+            this.dataSource.sort = this.sort;
+    
+            mercadoLivreAnuncio.forEach(mlanuncio => {
+    
+              if (mlanuncio.pictures && mlanuncio.pictures.length > 0) {
+                this.mlImageService.getImage(mlanuncio.pictures[0].url).subscribe({
+                  next: (imgBlob) => {
+                    this.anuncioImages.addImage(mlanuncio, imgBlob);
+                    this.loading = false;
+                  },
+                  error: (error) => {
+                    this.loading = false;
+                    this.errorMsg = error.message;
+                  }
+                });
               }
-            });
+            })
+    
+          }, error: (error) => {
+            this.loading = false;
+            this.errorMsg = error.message;
           }
         })
-
       }, error: (error) => {
         this.loading = false;
         this.errorMsg = error.message;
       }
-    })
+    });
+
   }
 
   onSubmit() {

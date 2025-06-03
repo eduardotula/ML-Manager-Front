@@ -29,6 +29,7 @@ export class ListVendasComponent {
         "quantidade",
         "quantidadeCancelado",
         "somaTaxa",
+        "somaFrete",
         "somaImposto",
         "somaVenda",
       'somaLucro',
@@ -149,6 +150,15 @@ export class ListVendasComponent {
         });
         return sum;
     }
+
+    sumFrete(){
+        var sum = 0;
+        this.dataSource.filteredData.forEach(data =>{
+            sum += data.somaFrete;
+        });
+        return sum;
+    }
+    
     sumImposto(){
         var sum = 0;
         this.dataSource.filteredData.forEach(data =>{
@@ -156,6 +166,8 @@ export class ListVendasComponent {
         });
         return sum;
     }
+
+    
 
     openVendasDetailDialog(vendas: ListVendas){
         //Correção de top bar

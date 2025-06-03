@@ -24,13 +24,15 @@ export class ListAnunciosComponent{
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('calcularDialog', { static: true })
   calcularDialog!: TemplateRef<any>;
+  @ViewChild('copiarAnunciosDialog', { static: true })
+  copiarAnunciosDialog!: TemplateRef<any>;
   @ViewChild('editDialog', { static: true })
   editDialog!: TemplateRef<any>;
   currentUserId: number;
   dataSource = new MatTableDataSource<Anuncio>([]);
   loading: boolean = true;
   errorMsg: string = "";
-  displayedColumns: string[] = ['id', 'mlId',"descricao","avaliableQuantity", "custo", "venda", "taxaMl", "frete", "lucro","createdAt","calcular" ,"edit", "update", "delete"];
+  displayedColumns: string[] = ['id', 'mlId',"descricao","avaliableQuantity", "custo", "venda", "taxaMl", "frete", "lucro", "lucroPorce","createdAt","calcular" ,"edit", "update", "delete"];
   anuncioImages: ImageModel<Anuncio> = new ImageModel();
   filterForm: FormGroup;
   currentEditingAnuncio!: Anuncio;
@@ -70,6 +72,7 @@ export class ListAnunciosComponent{
     this.loading = false;
     this.anuncioImages.anuncioImgsMap.clear();
     this.dataSource.data.forEach((anuncio) =>{
+      Anuncio.setLucroPorce(anuncio);
       if(anuncio.pictures.length > 0){
         this.imgService.getImage(anuncio.thumbnailUrl).subscribe({
           next: (imgBlob) => this.anuncioImages.addImage(anuncio, imgBlob)
@@ -128,6 +131,7 @@ export class ListAnunciosComponent{
   }
 
   openBuscarDialog(anuncio: Anuncio | null, isExistingAnuncio: boolean){
+    console.log('teste')
     //Correção de top bar
     this.dialog.open(this.calcularDialog, {
       width: "540px",
@@ -235,4 +239,13 @@ export class ListAnunciosComponent{
     a.download = 'Anuncios.xml';
     a.click();
   }
+
+  openCopiarAnunciosDialog(){
+    //Correção de top bar
+    this.dialog.open(this.copiarAnunciosDialog, {
+      width: "540px",
+      position: {top: "20vh"}
+    });
+  }
+
 }

@@ -18,6 +18,7 @@ export class Anuncio{
     public status: string;
     public createdAt: Date;
     public lucro: number;
+    public lucroPorce: number;
     public listingType: string;
     public imposto: number;
     public complete: boolean;
@@ -82,6 +83,7 @@ export class Anuncio{
         this.avaliableQuantity = avaliableQuantity;
         this.thumbnailUrl = thumbnailUrl;
         this.anuncioMessage = anuncioMessage;
+        this.lucroPorce = (lucro * 100) / precoDesconto;
     }
 
     static setValuesWithAnuncio(
@@ -113,6 +115,11 @@ export class Anuncio{
         oldAnuncio.avaliableQuantity = anuncio.avaliableQuantity;
         oldAnuncio.thumbnailUrl = anuncio.thumbnailUrl;
         oldAnuncio.anuncioMessage = anuncio.anuncioMessage;
+        oldAnuncio.lucroPorce = (anuncio.lucro * 100) / anuncio.precoDesconto;
+    }
+
+    static setLucroPorce(anuncio: Anuncio): void{
+        anuncio.lucroPorce = (anuncio.lucro * 100) / anuncio.precoDesconto;
     }
 }
 

@@ -40,6 +40,7 @@ import { VendasDetailComponent } from './ordem/vendas/vendas-detail/vendas-detai
 import { VendaStatusPipe } from './pipes/venda-status.pipe';
 import { EditarAnuncioComponent } from './anuncios/editar/editar-anuncio.component';
 import { ListMessagesComponent } from './mensagens/list-messages/list-messages.component';
+import { copiarAnunciosComponent } from './anuncios/list-produtos/copiar-anuncios/copiar-anuncios.component';
 
 registerLocaleData(localePt);
 
@@ -59,6 +60,7 @@ registerLocaleData(localePt);
         CalcularAnuncioComponent,
         VendasDetailComponent,
         ListMessagesComponent,
+        copiarAnunciosComponent
     ],
     providers: [AnuncioService,
         MercadoLivreService,

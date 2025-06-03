@@ -1,0 +1,7 @@
+    <form [formGroup]="form" class="form-group" (ngSubmit)="onSave($event)">
+        <label>Loja destino dos anuncios</label>
+        <select  class="form-select" formControlName="user">
+            <option *ngFor="let avaliableOption of allUsers" [ngValue]="avaliableOption">{{avaliableOption.name}}</option>
+        </select>
+        <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Salvar</button>
+    </form>

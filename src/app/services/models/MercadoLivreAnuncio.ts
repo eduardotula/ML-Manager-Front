@@ -8,8 +8,9 @@ export class MercadoLivreAnuncio{
     public thumbnail: string;
     public status: string;
     public pictures: any[];
+    public sku: string;
 
-    constructor(id: string, title: string,thumbnail: string, category_id: string, price: number, listing_type_id: string, images: any[], status: string){
+    constructor(id: string, title: string,thumbnail: string, category_id: string, price: number, listing_type_id: string, images: any[], status: string, sku: string){
         this.id = id;
         this.title = title;
         this.category_id = category_id;
@@ -18,6 +19,7 @@ export class MercadoLivreAnuncio{
         this.pictures = images;
         this.status = status;
         this.thumbnail = thumbnail;
+        this.sku = sku;
     }
 
 }
