@@ -31,13 +31,13 @@ export class CadastrarAnuncioComponent implements OnInit {
   errorMsg: string = "";
   @ViewChild('anuncioDialog', { static: true })
   anunciosDialog!: TemplateRef<any>;
-  anuncioImages: ImageModel<MercadoLivreAnuncio> = new ImageModel();
+  anuncioImages: ImageModel<Anuncio> = new ImageModel();
   @Input("existingAnuncio")
   existingAnuncio!: Anuncio;
-  dataSource = new MatTableDataSource<MercadoLivreAnuncio>([]);
-  @ViewChild('tables') table!: MatTable<MercadoLivreAnuncio>;
+  dataSource = new MatTableDataSource<Anuncio>([]);
+  @ViewChild('tables') table!: MatTable<Anuncio>;
   @ViewChild(MatSort) sort!: MatSort;
-  displayedColumns = ["img", "id", "title", "status"];
+  displayedColumns = ["img", "id", "descricao", "status"];
   @Output() updatedAnuncioEventEmmiter = new EventEmitter<Anuncio>();
 
   constructor(private formBuilder: FormBuilder, public service: AnuncioService, public lsUser: UserLSService,
@@ -107,9 +107,9 @@ export class CadastrarAnuncioComponent implements OnInit {
     }
   }
 
-  customFilter(data: MercadoLivreAnuncio, filter: any): boolean {
-    const a = !filter.id || data.id.toLowerCase().includes(filter.id.toLowerCase());
-    const b = !filter.descricao || data.title.toLowerCase().includes(filter.descricao.toLowerCase());
+  customFilter(data: Anuncio, filter: any): boolean {
+    const a = !filter.id || data.mlId.toLowerCase().includes(filter.id.toLowerCase());
+    const b = !filter.descricao || data.descricao.toLowerCase().includes(filter.descricao.toLowerCase());
 
     const s = !filter.status || data.status == "active" ? true : false;
     return a && b && s;
@@ -143,17 +143,9 @@ export class CadastrarAnuncioComponent implements OnInit {
   }
 
   setMercadoLivreAnuncios(ids: string[]) {
-    var anuncioObser: Observable<MercadoLivreAnuncio>[] = [];
+    var anuncioObser: Observable<Anuncio>[] = [];
 
-    this.userService.getAll().subscribe({
-      next: (users) => {
-        var auth = ""
-
-        users.forEach((userLoop => {
-          if(userLoop.id == this.currentUserId) auth = userLoop.accessCode;
-        }))
-
-        ids.forEach(id => anuncioObser.push(this.mlService.getAnuncioByMlId(id, auth)))
+        ids.forEach(id => anuncioObser.push(this.service.getAnuncioByMlIdSearch(id, this.currentUserId)))
         forkJoin(anuncioObser).subscribe({
           next: (mercadoLivreAnuncio) => {
             this.dataSource.data = mercadoLivreAnuncio;
@@ -180,12 +172,6 @@ export class CadastrarAnuncioComponent implements OnInit {
             this.errorMsg = error.message;
           }
         })
-      }, error: (error) => {
-        this.loading = false;
-        this.errorMsg = error.message;
-      }
-    });
-
   }
 
   onSubmit() {
@@ -213,10 +199,10 @@ export class CadastrarAnuncioComponent implements OnInit {
     }
   }
 
-  onTableClick(mlId: MercadoLivreAnuncio) {
+  onTableClick(anuncio: Anuncio) {
     this.dialog.closeAll();
     this.loading = true;
-    this.service.getAnuncioByMlIdSearch(mlId.id, this.currentUserId).subscribe({
+    this.service.getAnuncioByMlIdSearch(anuncio.mlId, this.currentUserId).subscribe({
       next: (prod) => {
         this.productForm.patchValue({
           descricao: prod.descricao,
@@ -231,14 +217,14 @@ export class CadastrarAnuncioComponent implements OnInit {
     });
 
     this.productForm.patchValue({
-      mlId: mlId,
+      mlId: anuncio,
     })
   }
 
   createAnuncio(anuncioSimple: AnuncioSimple) {
     this.service.createAnuncioSearch(anuncioSimple, this.currentUserId).subscribe({
       next: () => {
-        this.dataSource.data = this.dataSource.data.filter(anuncio => anuncio.id != anuncioSimple.mlId);
+        this.dataSource.data = this.dataSource.data.filter(anuncio => anuncio.mlId != anuncioSimple.mlId);
         this.resetPageState(); 
         this.resetForm();
       },
@@ -255,7 +241,7 @@ export class CadastrarAnuncioComponent implements OnInit {
         if (navigateToHome)
           this.router.navigate([""]);
         this.updatedAnuncioEventEmmiter.emit(anuncio);
-        this.dataSource.data = this.dataSource.data.filter(anuncio => anuncio.id != anuncioSimple.mlId);
+        this.dataSource.data = this.dataSource.data.filter(anuncio => anuncio.mlId != anuncioSimple.mlId);
         this.resetPageState();
         this.resetForm();
         
@@ -267,7 +253,7 @@ export class CadastrarAnuncioComponent implements OnInit {
     });
   }
 
-  getImageForAnuncio(anuncio: MercadoLivreAnuncio) {
+  getImageForAnuncio(anuncio: Anuncio) {
     return this.anuncioImages.getImage(anuncio);
   }
 

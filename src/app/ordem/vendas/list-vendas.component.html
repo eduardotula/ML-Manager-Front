@@ -81,6 +81,11 @@
         <td mat-cell *matCellDef="let venda">{{venda.somaLucro | currency: "BRL" }}</td>
         <td mat-footer-cell *matFooterCellDef> {{sumLucro() | currency: "BRL"}} </td>
       </div>
+      <div matColumnDef="csosn">
+        <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>csosn</th>
+        <td mat-cell *matCellDef="let venda">{{venda.anuncio.csosn}}</td>
+        <td mat-footer-cell *matFooterCellDef>  </td>
+      </div>
 
 
       <div matColumnDef="btnDetail">

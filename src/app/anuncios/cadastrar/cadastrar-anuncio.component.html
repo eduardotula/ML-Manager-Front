@@ -85,12 +85,12 @@
           </ng-container> 
           <ng-container matColumnDef="id" >
             <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>MLID</th>
-            <td mat-cell class="clikable" (click)="onTableClick(anuncio)" *matCellDef="let anuncio">{{ anuncio.id }}</td>
+            <td mat-cell class="clikable" (click)="onTableClick(anuncio)" *matCellDef="let anuncio">{{ anuncio.mlId }}</td>
           </ng-container>
   
-          <ng-container matColumnDef="title" >
+          <ng-container matColumnDef="descricao" >
             <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Descrição</th>
-            <td (click)="onTableClick(anuncio)" mat-cell class="clikable" *matCellDef="let anuncio">{{ anuncio.title }}</td>
+            <td (click)="onTableClick(anuncio)" mat-cell class="clikable" *matCellDef="let anuncio">{{ anuncio.descricao }}</td>
           </ng-container>
           
           <ng-container matColumnDef="status" >

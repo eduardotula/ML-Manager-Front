@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Observable, forkJoin } from 'rxjs';
 import { AnuncioService } from 'src/app/services/anuncios.service';
 import { Anuncio } from 'src/app/services/models/Anuncio';
-import * as ExcelJS from 'exceljs';
+import * as Excel from 'exceljs'
 import { Router } from '@angular/router';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
@@ -32,7 +32,7 @@ export class ListAnunciosComponent{
   dataSource = new MatTableDataSource<Anuncio>([]);
   loading: boolean = true;
   errorMsg: string = "";
-  displayedColumns: string[] = ['id', 'mlId',"descricao","avaliableQuantity", "custo", "venda", "taxaMl", "frete", "lucro", "lucroPorce","createdAt","calcular" ,"edit", "update", "delete"];
+  displayedColumns: string[] = ['id', 'mlId',"sku","descricao","avaliableQuantity", "custo", "venda", "taxaMl", "frete", "lucro", "lucroPorce","createdAt","calcular" ,"edit", "update", "delete"];
   anuncioImages: ImageModel<Anuncio> = new ImageModel();
   filterForm: FormGroup;
   currentEditingAnuncio!: Anuncio;
@@ -50,6 +50,8 @@ export class ListAnunciosComponent{
       this.filterForm = formBuilder.group({
         descricao: '',
         status: true,
+        isFull: false,
+        catalogListing: false,
 
       });
       this.dataSource.filter = this.filterForm as unknown as string;
@@ -83,10 +85,13 @@ export class ListAnunciosComponent{
 
   customFilter(data: Anuncio, filter: any): boolean {
     const b = !filter.descricao || data.descricao.toLowerCase().includes(filter.descricao.toLowerCase());
+    const sku = !filter.descricao || data.sku.toLowerCase().includes(filter.descricao.toLowerCase());
     const a = !filter.descricao || data.mlId.toLowerCase().includes(filter.descricao.toLowerCase());
     const s = !filter.status || data.status == "active" ? true : false;
+    const f = !filter.isFull || data.fulfillment ? true : false;
+    const c = !filter.catalogListing || data.catalogListing ? true : false;
 
-    return ((b || a) && s);
+    return ((b || a || sku) && s && f && c);
   }
   
   clickEdit(anuncio: Anuncio) {
@@ -162,15 +167,17 @@ export class ListAnunciosComponent{
   }
 
   exportToExcel(){
-    var workbook = new ExcelJS.Workbook();
+    var workbook = new Excel.Workbook();
     var worksheet = workbook.addWorksheet("Anuncios");
     var columns = [
       { name: 'mlId', width: 14 },
       { name: 'sku',  width: 20 },
+      { name: 'gtin',  width: 20 },
       { name: 'url', width: 10 },
       { name: 'Descrição', width: 60 },
       { name: 'Categoria',  width: 12 },
       { name: 'Custo',  width: 14 },
+      { name: 'avaliableQuantity',  width: 14 },
       { name: 'Venda', width: 12 },
       { name: 'TaxaML',  width: 12 },
       { name: 'Frete',  width: 12 },
@@ -181,7 +188,7 @@ export class ListAnunciosComponent{
     var data: any = []
     this.dataSource.filteredData.forEach(prod =>{
       let line = [
-        prod.mlId, prod.sku, prod.gtin, prod.url, prod.descricao, prod.categoria, prod.custo, prod.precoDesconto, prod.taxaML, prod.custoFrete, prod.lucro,prod.status
+        prod.mlId, prod.sku, prod.gtin, prod.url, prod.descricao, prod.categoria, prod.custo,prod.avaliableQuantity, prod.precoDesconto, prod.taxaML, prod.custoFrete, prod.lucro,prod.status
       ]
       data.push(line);
     });

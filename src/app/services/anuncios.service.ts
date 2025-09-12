@@ -6,6 +6,7 @@ import { Anuncio, AnuncioMessage } from './models/Anuncio';
 import { AnuncioSimple } from './models/AnuncioSimple';
 import { AnuncioSimulation } from './models/AnuncioSimulation';
 import { environment } from 'src/environments/environment';
+import { MercadoLivreAnuncio } from './models/MercadoLivreAnuncio';
 
 
 @Injectable({

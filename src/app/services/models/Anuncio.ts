@@ -12,7 +12,7 @@ export class Anuncio{
     public custo: number;
     public csosn: string;
     public precoDesconto: number;
-    private avaliableQuantity: number;
+    public avaliableQuantity: number;
     public taxaML: number;
     public custoFrete: number;
     public status: string;

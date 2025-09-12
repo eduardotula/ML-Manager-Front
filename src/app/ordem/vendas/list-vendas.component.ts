@@ -33,6 +33,7 @@ export class ListVendasComponent {
         "somaImposto",
         "somaVenda",
       'somaLucro',
+      'csosn',
       'btnDetail'
     ];
     currentUserId: number;
