@@ -1,6 +1,6 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, catchError, forkJoin, of } from 'rxjs';
 import { AnuncioService } from 'src/app/services/anuncios.service';
 import { Anuncio } from 'src/app/services/models/Anuncio';
 import * as Excel from 'exceljs'
@@ -18,7 +18,7 @@ import { ConfirmBoxEvokeService } from '@costlydeveloper/ngx-awesome-popup';
   templateUrl: "./list-anuncios.component.html",
   styleUrls: ['./list-anuncios.component.scss'],
 })
-export class ListAnunciosComponent{
+export class ListAnunciosComponent {
 
   @ViewChild("tables") table!: MatTable<Anuncio>;
   @ViewChild(MatSort) sort!: MatSort;
@@ -32,7 +32,7 @@ export class ListAnunciosComponent{
   dataSource = new MatTableDataSource<Anuncio>([]);
   loading: boolean = true;
   errorMsg: string = "";
-  displayedColumns: string[] = ['id', 'mlId',"sku","descricao","avaliableQuantity", "custo", "venda", "taxaMl", "frete", "lucro", "lucroPorce","createdAt","calcular" ,"edit", "update", "delete"];
+  displayedColumns: string[] = ['id', 'mlId', "sku", "descricao", "avaliableQuantity","estoque", "custo", "venda", "taxaMl", "custoFrete", "lucro", "lucroPorce", "createdAt", "calcular", "edit", "update", "delete"];
   anuncioImages: ImageModel<Anuncio> = new ImageModel();
   filterForm: FormGroup;
   currentEditingAnuncio!: Anuncio;
@@ -44,23 +44,24 @@ export class ListAnunciosComponent{
     private dialog: MatDialog,
     private confirmBoxEvokeService: ConfirmBoxEvokeService,
     formBuilder: FormBuilder,
-    ) {
-      this.currentUserId = this.lsUser.getCurrentUser();
-      this.dataSource.filterPredicate = this.customFilter;
-      this.filterForm = formBuilder.group({
-        descricao: '',
-        status: true,
-        isFull: false,
-        catalogListing: false,
+  ) {
+    this.currentUserId = this.lsUser.getCurrentUser();
+    this.dataSource.filterPredicate = this.customFilter;
+    this.filterForm = formBuilder.group({
+      descricao: '',
+      status: true,
+      isFull: false,
+      catalogListing: false,
+      isOficialStore: false,
 
-      });
-      this.dataSource.filter = this.filterForm as unknown as string;
-      this.filterForm.valueChanges.subscribe((value) => {
-        this.dataSource.filter = value;
-      });
-    }
+    });
+    this.dataSource.filter = this.filterForm as unknown as string;
+    this.filterForm.valueChanges.subscribe((value) => {
+      this.dataSource.filter = value;
+    });
+  }
 
-   ngAfterViewInit(): void {
+  ngAfterViewInit(): void {
 
     this.service.listAll(this.currentUserId, true).subscribe({
       next: (prods) => {
@@ -73,9 +74,9 @@ export class ListAnunciosComponent{
     this.dataSource.sort = this.sort;
     this.loading = false;
     this.anuncioImages.anuncioImgsMap.clear();
-    this.dataSource.data.forEach((anuncio) =>{
+    this.dataSource.data.forEach((anuncio) => {
       Anuncio.setLucroPorce(anuncio);
-      if(anuncio.pictures.length > 0){
+      if (anuncio.pictures.length > 0) {
         this.imgService.getImage(anuncio.thumbnailUrl).subscribe({
           next: (imgBlob) => this.anuncioImages.addImage(anuncio, imgBlob)
         });
@@ -90,24 +91,26 @@ export class ListAnunciosComponent{
     const s = !filter.status || data.status == "active" ? true : false;
     const f = !filter.isFull || data.fulfillment ? true : false;
     const c = !filter.catalogListing || data.catalogListing ? true : false;
+    const r = !filter.isOficialStore || data.officialStoreId ? true : false;
 
-    return ((b || a || sku) && s && f && c);
+
+    return ((b || a || sku) && s && f && c && r);
   }
-  
+
   clickEdit(anuncio: Anuncio) {
     this.currentEditingAnuncio = anuncio;
     console.log(this.currentEditingAnuncio)
-      //Correção de top bar
-      this.dialog.open(this.editDialog, {
+    //Correção de top bar
+    this.dialog.open(this.editDialog, {
       width: "740px",
-      data:{anuncio: anuncio},
-      position: {top: "20vh"}
+      data: { anuncio: anuncio },
+      position: { top: "20vh" }
     });
   }
 
   clickDelete(anuncio: Anuncio) {
-    this.confirmBoxEvokeService.warning("Apagar:","Deseja apagar o anuncio?", "Confirmar", "Cancelar").subscribe(resp =>{
-      if(resp.success){
+    this.confirmBoxEvokeService.warning("Apagar:", "Deseja apagar o anuncio?", "Confirmar", "Cancelar").subscribe(resp => {
+      if (resp.success) {
         this.service.deleteById(anuncio.id).subscribe({
           next: () => window.location.reload(),
           error: (err) => this.errorMsg = err.message
@@ -120,7 +123,7 @@ export class ListAnunciosComponent{
     this.service.updateAnuncioSearchByMlId(anuncio.mlId, this.currentUserId).subscribe({
       next: (anuncio) => {
         var anuncioIndex = this.dataSource.data.findIndex((anun) => anun.id == anuncio.id);
-        if(anuncioIndex > -1){
+        if (anuncioIndex > -1) {
           var oldData = this.dataSource.data[anuncioIndex];
           Anuncio.setValuesWithAnuncio(oldData, anuncio);
           this.table.renderRows();
@@ -131,68 +134,74 @@ export class ListAnunciosComponent{
     });
   };
 
-  onSubmitEditProduto(anuncio: Anuncio){
+  onSubmitEditProduto(anuncio: Anuncio) {
     this.clickUpdate(anuncio);
   }
 
-  openBuscarDialog(anuncio: Anuncio | null, isExistingAnuncio: boolean){
+  openBuscarDialog(anuncio: Anuncio | null, isExistingAnuncio: boolean) {
     console.log('teste')
     //Correção de top bar
     this.dialog.open(this.calcularDialog, {
       width: "540px",
-      data:{anuncio: anuncio, isExistingAnuncio: isExistingAnuncio},
-      position: {top: "20vh"}
+      data: { anuncio: anuncio, isExistingAnuncio: isExistingAnuncio },
+      position: { top: "20vh" }
     });
   }
 
-  clickUpdateAll() {
-    this.errorMsg = "";
-    this.loading = true;
+  clickUpdateAll(): void {
+  this.errorMsg = '';
+  this.loading = true;
 
-    const requests: Observable<Anuncio>[] = [];
-    this.dataSource.filteredData.forEach((anunciosRegistrado)=>{
-      requests.push(this.service.updateAnuncioSearchByMlId(anunciosRegistrado.mlId, this.currentUserId))
-    });
+  const requests$ = this.dataSource.filteredData.map(anuncio =>
+    this.service.updateAnuncioSearchByMlId(anuncio.mlId, this.currentUserId).pipe(
+      catchError(err => {
+        console.error(`Erro ao atualizar ${anuncio.mlId}`, err);
+        this.errorMsg += `Erro ao atualizar anuncio ${anuncio.mlId}   `, err;
+        return of(anuncio);
+      })
+    )
+  );
 
-    forkJoin(requests).subscribe(
-      (results) => {
-        this.refreshAnuncioData(results);
-      },
-      (error) => {
-        console.error('Error updating Anuncios:', error);
-        this.errorMsg = 'Erro ao atualizar Anuncios';
-        this.loading = false;
-      }
-    );
-  }
+  forkJoin(requests$).subscribe({
+    next: (results) => {
+      const validResults = results.filter(r => r !== null);
+      this.refreshAnuncioData(validResults);
+      this.loading = false;
+    },
+    error: () => {
+      this.errorMsg = 'Erro ao atualizar Anuncios';
+      this.loading = false;
+    }
+  });
+}
 
-  exportToExcel(){
+  exportToExcel() {
     var workbook = new Excel.Workbook();
     var worksheet = workbook.addWorksheet("Anuncios");
     var columns = [
       { name: 'mlId', width: 14 },
-      { name: 'sku',  width: 20 },
-      { name: 'gtin',  width: 20 },
+      { name: 'sku', width: 20 },
+      { name: 'gtin', width: 20 },
       { name: 'url', width: 10 },
       { name: 'Descrição', width: 60 },
-      { name: 'Categoria',  width: 12 },
-      { name: 'Custo',  width: 14 },
-      { name: 'avaliableQuantity',  width: 14 },
+      { name: 'Categoria', width: 12 },
+      { name: 'Custo', width: 14 },
+      { name: 'avaliableQuantity', width: 14 },
       { name: 'Venda', width: 12 },
-      { name: 'TaxaML',  width: 12 },
-      { name: 'Frete',  width: 12 },
-      { name: 'Lucro',  width: 12 },
+      { name: 'TaxaML', width: 12 },
+      { name: 'Frete', width: 12 },
+      { name: 'Lucro', width: 12 },
       { name: 'Status', width: 8 },
     ];
-    
+
     var data: any = []
-    this.dataSource.filteredData.forEach(prod =>{
+    this.dataSource.filteredData.forEach(prod => {
       let line = [
-        prod.mlId, prod.sku, prod.gtin, prod.url, prod.descricao, prod.categoria, prod.custo,prod.avaliableQuantity, prod.precoDesconto, prod.taxaML, prod.custoFrete, prod.lucro,prod.status
+        prod.mlId, prod.sku, prod.gtin, prod.url, prod.descricao, prod.categoria, prod.custo, prod.avaliableQuantity,prod.estoque, prod.precoDesconto, prod.taxaML, prod.custoFrete, prod.lucro, prod.status
       ]
       data.push(line);
     });
-    
+
     worksheet.addTable({
       name: "Anuncios",
       ref: "A1",
@@ -212,17 +221,17 @@ export class ListAnunciosComponent{
     });
   }
 
-  getImageForAnuncio(anuncio: Anuncio): any{
+  getImageForAnuncio(anuncio: Anuncio): any {
     return this.anuncioImages.getImage(anuncio);
   }
 
-  
-  exportAnuncio(){
+
+  exportAnuncio() {
     var xmlDoc = document.implementation.createDocument(null, 'anuncios');
 
     var index = 1;
-    this.dataSource.filteredData.forEach(row =>{
-      let anuncio = xmlDoc.createElement("anuncio_"+index);
+    this.dataSource.filteredData.forEach(row => {
+      let anuncio = xmlDoc.createElement("anuncio_" + index);
       let mlId = xmlDoc.createElement("mlId");
       mlId.textContent = row.mlId;
       let custo = xmlDoc.createElement("custo");
@@ -239,7 +248,7 @@ export class ListAnunciosComponent{
 
     var serializer = new XMLSerializer();
     var xmlString = serializer.serializeToString(xmlDoc);
-    let blob = new Blob([xmlString], {type: "text/xml"});
+    let blob = new Blob([xmlString], { type: "text/xml" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -247,11 +256,11 @@ export class ListAnunciosComponent{
     a.click();
   }
 
-  openCopiarAnunciosDialog(){
+  openCopiarAnunciosDialog() {
     //Correção de top bar
     this.dialog.open(this.copiarAnunciosDialog, {
       width: "540px",
-      position: {top: "20vh"}
+      position: { top: "20vh" }
     });
   }
 

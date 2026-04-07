@@ -32,6 +32,7 @@ export class ListVendasComponent {
         "somaFrete",
         "somaImposto",
         "somaVenda",
+        "somaDevolucao",
       'somaLucro',
       'csosn',
       'btnDetail'
@@ -139,6 +140,14 @@ export class ListVendasComponent {
         var sum = 0;
         this.dataSource.filteredData.forEach(data =>{
             sum += data.somaVenda;
+        });
+        return sum;
+    }
+
+    sumDevolucaoTotal(){
+        var sum = 0;
+        this.dataSource.filteredData.forEach(data =>{
+            sum += data.somaDevolucao;
         });
         return sum;
     }

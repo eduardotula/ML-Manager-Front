@@ -21,6 +21,7 @@ export class CalcularAnuncioComponent implements OnInit {
     @Input("isExistingAnuncio")
     loading: boolean = false;
     errorMsg: string = "";
+    porcentagem: number = 0;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -29,15 +30,17 @@ export class CalcularAnuncioComponent implements OnInit {
             this.currentUserId = this.lsUserService.getCurrentUser();
             if(data.anuncio){
                 this.anuncio = data.anuncio;
-            }else this.anuncio = new Anuncio(0,"","","","", "", "", 0, "102",0,0,0,"",new Date(),0,false,[], [], 0,"classico", false, false, 0,"", []);
+            }else this.anuncio = new Anuncio(0,"","","","", "", "", 0, "102",0,0,0,"",new Date(),0,false,[],[],"", 0,"classico", false, false, 0,0,"", []);
             this.isExistingAnuncio = data.isExistingAnuncio;
 
             this.lucro = this.anuncio.lucro;
+            this.porcentagem = Anuncio.getLucroPorce(this.anuncio.lucro, this.anuncio.precoDesconto);
             this.consultaForm = this.formBuilder.group({
                 precoDesconto: [this.anuncio.precoDesconto, Validators.required],
                 custo: [this.anuncio.custo, Validators.required],
                 csosn: [this.anuncio.csosn, Validators.required],
                 taxaML: [this.anuncio.taxaML, Validators.required],
+                porcentagem: [this.porcentagem, Validators.required],
                 imposto: [this.anuncio.imposto],
                 frete: [this.anuncio.custoFrete, Validators.required],
                 tipoAnuncio: [this.anuncio.listingType,Validators.required],
@@ -71,6 +74,10 @@ export class CalcularAnuncioComponent implements OnInit {
         return this.consultaForm.get("taxaML")!.value;
       } 
 
+    get getPorcentagem(){
+        return this.consultaForm.get("porcentagem")!.value;
+    } 
+
     async calculateLucro(){
         this.loading = true;
         if(this.consultaForm.valid){
@@ -99,8 +106,8 @@ export class CalcularAnuncioComponent implements OnInit {
                        imposto: response.imposto,
                        taxaML: response.taxaMl,
                        frete: response.frete,
+                       porcentagem: Anuncio.getLucroPorce(response.lucro, this.consultaForm.get("precoDesconto")!.value)
                    });
-
                    this.loading = false;
                }, error: (error) => {
                    this.loading = false;

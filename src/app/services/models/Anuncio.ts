@@ -13,10 +13,12 @@ export class Anuncio{
     public csosn: string;
     public precoDesconto: number;
     public avaliableQuantity: number;
+    public estoque: number;
     public taxaML: number;
     public custoFrete: number;
     public status: string;
     public createdAt: Date;
+    public officialStoreId: string;
     public lucro: number;
     public lucroPorce: number;
     public listingType: string;
@@ -49,11 +51,13 @@ export class Anuncio{
         complete: boolean,
         pictures: Url[],
         vendas: Venda[],
+        officialStoreId: string,
         imposto: number,
         listingType: string,
         fulfillment: boolean = false,
         catalogListing: boolean = false,
         avaliableQuantity: number,
+        estoque: number,
         thumbnailUrl: string,
         anuncioMessage: AnuncioMessage[],
 
@@ -72,6 +76,7 @@ export class Anuncio{
         this.custoFrete = custoFrete;
         this.status = status;
         this.createdAt = createdAt;
+        this.officialStoreId = officialStoreId;
         this.lucro = lucro;
         this.complete = complete;
         this.pictures = pictures;
@@ -81,6 +86,7 @@ export class Anuncio{
         this.fulfillment = fulfillment;
         this.catalogListing = catalogListing;
         this.avaliableQuantity = avaliableQuantity;
+        this.estoque = estoque;
         this.thumbnailUrl = thumbnailUrl;
         this.anuncioMessage = anuncioMessage;
         this.lucroPorce = (lucro * 100) / precoDesconto;
@@ -108,6 +114,7 @@ export class Anuncio{
         oldAnuncio.complete = anuncio.complete;
         oldAnuncio.pictures = anuncio.pictures;
         oldAnuncio.vendas = anuncio.vendas;
+        oldAnuncio.officialStoreId = anuncio.officialStoreId;
         oldAnuncio.listingType = anuncio.listingType;
         oldAnuncio.imposto = anuncio.imposto;
         oldAnuncio.fulfillment = anuncio.fulfillment;
@@ -120,6 +127,10 @@ export class Anuncio{
 
     static setLucroPorce(anuncio: Anuncio): void{
         anuncio.lucroPorce = (anuncio.lucro * 100) / anuncio.precoDesconto;
+    }
+
+    static getLucroPorce(lucro: number, precoDesconto: number): number{
+        return (lucro * 100) / precoDesconto;
     }
 }
 

@@ -73,7 +73,12 @@
         <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Venda Total</th>
         <td mat-cell *matCellDef="let venda">{{venda.somaVenda | currency: "BRL" }}</td>
         <td mat-footer-cell *matFooterCellDef> {{sumVendaTotal()  | currency: "BRL"}} </td>
+      </div>
 
+        <div matColumnDef="somaDevolucao">
+        <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Devolução Total</th>
+        <td mat-cell *matCellDef="let venda">{{venda.somaDevolucao | currency: "BRL" }}</td>
+        <td mat-footer-cell *matFooterCellDef> {{sumDevolucaoTotal()  | currency: "BRL"}} </td>
       </div>
 
       <div matColumnDef="somaLucro">

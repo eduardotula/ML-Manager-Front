@@ -8,33 +8,39 @@
             <span class="card-header text-center">Anuncio</span>
             <div class="row" style="margin-top: 10px;">
                 <div class="col-md-6">
-                    <label class="form-label" >Valor do Anuncio</label>
+                    <label class="form-label">Valor do Anuncio</label>
                     <input type="number" class="form-control" name="precoDesconto" formControlName="precoDesconto">
                 </div>
-                <div *ngIf="!isExistingAnuncio" class="col-md-6" >
-                    <label class="form-label" >ID de mesmo produto</label>
-                    <input type="text" class="form-control" name="equivalentMlId" placeholder="MLB1578320293" formControlName="equivalentMlId">
+                <div *ngIf="!isExistingAnuncio" class="col-md-6">
+                    <label class="form-label">ID de mesmo produto</label>
+                    <input type="text" class="form-control" name="equivalentMlId" placeholder="MLB1578320293"
+                        formControlName="equivalentMlId">
                 </div>
             </div>
 
             <div class="row" style="margin-top: 10px; margin-bottom: 10px;">
-                
+
                 <div class="col-md-6">
-                    <label class="form-label" >Lucro</label>
-                    <input type="text" name="lucro" [value]="lucro | currency : 'BRL'" class="form-control disabled-input" readonly>
+                    <label class="form-label">Lucro</label>
+                    <input type="text" name="lucro" [value]="lucro | currency : 'BRL'"
+                        class="form-control disabled-input" readonly>
                 </div>
                 <div class="col-md-6">
                     <label class="form-label" for="csosn">Tipo</label>
                     <select class="form-select" formControlName="tipoAnuncio">
-                    <option value="classico">Classico</option>
-                    <option value="premium">Premium</option>
+                        <option value="classico">Classico</option>
+                        <option value="premium">Premium</option>
                     </select>
                 </div>
             </div>
 
-            <div class="row" style="margin-bottom: 10px;">
+            <div class="row">
                 <div class="col-md-6">
-                    <button class="btn btn-primary"  (click)="calculateLucro()">Calcular</button>
+                    <button class="btn btn-primary" (click)="calculateLucro()">Calcular</button>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Porcentagem</label>
+                    <input type="number" class="form-control" name="porcentagem" formControlName="porcentagem">
                 </div>
             </div>
         </div>
@@ -43,11 +49,11 @@
         <div class="row card" style="margin:20px">
             <span class="card-header text-center">Custos e Tarifas</span>
             <div class="row">
-                
+
                 <div class="row">
                     <div class="col-md-6">
-                        <label class="form-label" >Custo da Mercadoria</label>
-                        <input type="number"  class="form-control" formControlName="custo">
+                        <label class="form-label">Custo da Mercadoria</label>
+                        <input type="number" class="form-control" formControlName="custo">
                     </div>
                 </div>
 
@@ -55,25 +61,28 @@
                     <div class="col-md-6">
                         <label class="form-label" for="csosn">CSONS</label>
                         <select class="form-select" formControlName="csosn">
-                        <option value="102">102</option>
-                        <option value="500">500</option>
+                            <option value="102">102</option>
+                            <option value="500">500</option>
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label" >Imposto</label>
-                        <input type="text" [value]="getImposto | currency:'BRL'" formControlName="imposto"  class="form-control disabled-input" readonly>
+                        <label class="form-label">Imposto</label>
+                        <input type="text" [value]="getImposto | currency:'BRL'" formControlName="imposto"
+                            class="form-control disabled-input" readonly>
                     </div>
                 </div>
 
 
                 <div class="row" style="margin-bottom: 10px;">
                     <div class="col-md-6">
-                        <label class="form-label" >TaxaML</label>
-                        <input type="text" [value]="getTaxaML | currency:'BRL'" formControlName="taxaML" class="form-control disabled-input"readonly>
+                        <label class="form-label">TaxaML</label>
+                        <input type="text" [value]="getTaxaML | currency:'BRL'" formControlName="taxaML"
+                            class="form-control disabled-input" readonly>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Frete</label>
-                        <input type="text" [value]="getFrete | currency:'BRL'" formControlName="frete" class="form-control disabled-input" readonly>
+                        <input type="text" [value]="getFrete | currency:'BRL'" formControlName="frete"
+                            class="form-control disabled-input" readonly>
                     </div>
                 </div>
             </div>

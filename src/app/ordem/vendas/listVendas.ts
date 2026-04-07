@@ -9,6 +9,7 @@ export class ListVendas{
     public quantidadeCancelado: number = 0;
     public somaCusto: number = 0;
     public somaVenda: number = 0;
+    public somaDevolucao: number = 0;
     public somaLucro: number = 0;
     public somaTaxaML: number = 0;
     public somaImposto: number = 0;
@@ -23,6 +24,7 @@ export class ListVendas{
 
     public sumValues(){
         this.vendas.forEach(venda => {
+            
             if( venda.status == "paid"){
                 this.quantidade += venda.quantidade;
                 this.somaCusto += venda.custo;
@@ -32,7 +34,9 @@ export class ListVendas{
                 this.somaImposto += venda.imposto;
                 this.somaFrete += venda.custoFrete;
             }else{
+
                 this.quantidadeCancelado += venda.quantidade;
+                this.somaDevolucao += venda.precoDesconto;
             }
         })
     }

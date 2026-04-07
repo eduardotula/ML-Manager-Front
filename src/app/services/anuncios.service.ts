@@ -115,4 +115,11 @@ export class AnuncioService extends CommonService{
     return this.http.delete<Anuncio>(this.url + `/${anuncioId}/messages/${anuncioMessageId}`).pipe(catchError(this.handleError));
   }
 
+  getLastFrete(mlId: string, userId: number): Observable<number>{
+        var params ={
+      "user-id": userId,
+    };
+        return this.http.get<number>(this.url + `/${mlId}/last-frete`, {params}).pipe(catchError(this.handleError));
+  }
+
 }
