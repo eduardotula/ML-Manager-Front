@@ -41,6 +41,7 @@ import { VendaStatusPipe } from './pipes/venda-status.pipe';
 import { EditarAnuncioComponent } from './anuncios/editar/editar-anuncio.component';
 import { ListMessagesComponent } from './mensagens/list-messages/list-messages.component';
 import { copiarAnunciosComponent } from './anuncios/list-produtos/copiar-anuncios/copiar-anuncios.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 registerLocaleData(localePt);
 
@@ -76,6 +77,7 @@ registerLocaleData(localePt);
         ReactiveFormsModule,
         FormsModule,
         MatDialogModule,
+        MatPaginatorModule,
         NgbAccordionModule,
         NgxAwesomePopupModule.forRoot(),
         DialogConfigModule.forRoot(),

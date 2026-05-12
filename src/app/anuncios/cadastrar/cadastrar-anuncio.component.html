@@ -1,63 +1,107 @@
-<div class="alert alert-danger" *ngIf="errorMsg"> {{errorMsg}}</div>
+<div class="alert alert-danger" *ngIf="errorMsg">{{ errorMsg }}</div>
 
-<div class="container-sm" style="margin-top: 10px;">
-  <div class="card" style="margin-bottom: 20px;">
+<div class="container-sm" style="margin-top: 10px">
+  <div class="card" style="margin-bottom: 20px">
     <div>
       <h2 class="text-center">Registrar Anuncio</h2>
       <form [formGroup]="productForm">
         <div class="form-group">
-
           <div class="row">
             <label for="mlId">ML ID</label>
             <div class="row">
-              <input  type="text" id="mlId" name="mlId" class="form-control col" formControlName="mlId" style="margin-right: 10px;">
-              <button *ngIf="!existingAnuncio" class="btn btn-primary col-2" (click)="openBuscarDialog()">Buscar</button>
+              <input
+                type="text"
+                id="mlId"
+                name="mlId"
+                class="form-control col"
+                formControlName="mlId"
+                style="margin-right: 10px"
+              />
+              <button
+                *ngIf="!existingAnuncio"
+                class="btn btn-primary col-2"
+                (click)="openBuscarDialog()"
+              >
+                Buscar
+              </button>
             </div>
           </div>
-  
+
           <div class="row">
-           <div class="col-4">
-            <label for="">SKU</label>
-            <input class="form-control" id="sku" name="sku" formControlName="sku"  type="text" readonly>
+            <div class="col-4">
+              <label for="">SKU</label>
+              <input
+                class="form-control"
+                id="sku"
+                name="sku"
+                formControlName="sku"
+                type="text"
+                readonly
+              />
             </div>
-           <div class="col">
-            <label for="">Descrição</label>
-            <input class="form-control" id="descricao" name="descricao" formControlName="descricao"  type="text" readonly>
+            <div class="col">
+              <label for="">Descrição</label>
+              <input
+                class="form-control"
+                id="descricao"
+                name="descricao"
+                formControlName="descricao"
+                type="text"
+                readonly
+              />
             </div>
           </div>
-  
-           <div class="row">
+
+          <div class="row">
             <div class="col">
               <label for="custo">Custo</label>
-              <input type="number" class="form-control" id="custo" formControlName="custo">
-              <div class="alert alert-danger" *ngIf="custo?.invalid && (custo?.dirty || custo?.touched)">Campo obrigatorio</div>
-            </div>
-
-           </div>
-  
-           <div class="row">
-              <div class="col">
-                <label class="form-label" for="csosn">CSONS:</label>
-                <select class="form-select" formControlName="csosn">
-                  <option value="102">102</option>
-                  <option value="500">500</option>
-                </select>
-              <div class="alert alert-danger" *ngIf="csosn?.invalid && (csosn?.dirty || csosn?.touched)">Campo obrigatorio</div>
+              <input
+                type="number"
+                class="form-control"
+                id="custo"
+                formControlName="custo"
+              />
+              <div
+                class="alert alert-danger"
+                *ngIf="custo?.invalid && (custo?.dirty || custo?.touched)"
+              >
+                Campo obrigatorio
               </div>
-           </div>
-  
-           <div class="d-flex justify-content-center align-items-center" style="margin-top: 10px; margin-bottom: 10px;">
-              <button type="submit" class="btn btn-primary" (click)="onSubmit()">Cadastrar</button>
-           </div>
-        </div>
+            </div>
+          </div>
 
+          <div class="row">
+            <div class="col">
+              <label class="form-label" for="csosn">CSONS:</label>
+              <select class="form-select" formControlName="csosn">
+                <option value="102">102</option>
+                <option value="500">500</option>
+              </select>
+              <div
+                class="alert alert-danger"
+                *ngIf="csosn?.invalid && (csosn?.dirty || csosn?.touched)"
+              >
+                Campo obrigatorio
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="d-flex justify-content-center align-items-center"
+            style="margin-top: 10px; margin-bottom: 10px"
+          >
+            <button type="submit" class="btn btn-primary" (click)="onSubmit()">
+              Cadastrar
+            </button>
+          </div>
+        </div>
       </form>
-     </div>
+    </div>
   </div>
 
-  <ng-template class="container-sm dialog" #anuncioDialog  >
+  <ng-template class="container-sm dialog" #anuncioDialog>
     <h2 matDialogTitle>Anuncios</h2>
-    
+
     <div>
       <ngx-loading [show]="loading"></ngx-loading>
     </div>
@@ -66,44 +110,113 @@
         <form class="card stick-top" [formGroup]="filterForm">
           <div class="row">
             <div class="col-3">
-              <input class="form-control me-4 mt-2 mb-2" placeholder="MLID" formControlName="id">
+              <input
+                class="form-control me-4 mt-2 mb-2"
+                placeholder="MLID"
+                formControlName="id"
+              />
             </div>
             <div class="col-6">
-              <input class="form-control me-4 mt-2 mb-2" placeholder="Descrição" formControlName="descricao">
+              <input
+                class="form-control me-4 mt-2 mb-2"
+                placeholder="Descrição"
+                formControlName="descricao"
+              />
             </div>
             <div class="col-auto form-check form-switch align-self-center">
-              <label class="form-check-label" for="flexSwitchCheckDefault">Somente ativos</label>
-              <input class="form-check-input"  type="checkbox" role="switch" id="flexSwitchCheckDefault" formControlName="status">
+              <label class="form-check-label" for="flexSwitchCheckDefault"
+                >Somente ativos</label
+              >
+
+              <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="flexSwitchCheckDefault"
+                formControlName="status"
+              />
             </div>
           </div>
         </form>
-        <table #tables mat-table [dataSource]="dataSource" class="table caption-top table-striped table-hover" matSort>
-
+        <table
+          #tables
+          mat-table
+          [dataSource]="dataSource"
+          class="table caption-top table-striped table-hover"
+          matSort
+        >
           <ng-container matColumnDef="img">
             <th mat-header-cell scope="col" *matHeaderCellDef></th>
-            <td mat-cell  class="clikable" (click)="onTableClick(anuncio)" *matCellDef="let anuncio"><img [src]="getImageForAnuncio(anuncio)" alt="Image" style="height: 48px; width: 60px;"></td>
-          </ng-container> 
-          <ng-container matColumnDef="id" >
-            <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>MLID</th>
-            <td mat-cell class="clikable" (click)="onTableClick(anuncio)" *matCellDef="let anuncio">{{ anuncio.mlId }}</td>
+            <td
+              mat-cell
+              class="clikable"
+              (click)="onTableClick(anuncio)"
+              *matCellDef="let anuncio"
+            >
+              <img
+                [src]="getImageForAnuncio(anuncio)"
+                alt="Image"
+                style="height: 48px; width: 60px"
+              />
+            </td>
           </ng-container>
-  
-          <ng-container matColumnDef="descricao" >
-            <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Descrição</th>
-            <td (click)="onTableClick(anuncio)" mat-cell class="clikable" *matCellDef="let anuncio">{{ anuncio.descricao }}</td>
-          </ng-container>
-          
-          <ng-container matColumnDef="status" >
-            <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>Status</th>
-            <td mat-cell class="clikable" (click)="onTableClick(anuncio)"  *matCellDef="let anuncio">{{ anuncio.status | anuncioStatus }}</td>
-          </ng-container>
-          
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-      </div>
 
-     </mat-dialog-content>
-   </ng-template>
-  
+          <ng-container matColumnDef="id">
+            <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>
+              MLID
+            </th>
+            <td
+              mat-cell
+              class="clikable"
+              (click)="onTableClick(anuncio)"
+              *matCellDef="let anuncio"
+            >
+              {{ anuncio.mlId }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="descricao">
+            <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>
+              Descrição
+            </th>
+            <td
+              mat-cell
+              class="clikable"
+              (click)="onTableClick(anuncio)"
+              *matCellDef="let anuncio"
+            >
+              {{ anuncio.descricao }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell scope="col" *matHeaderCellDef mat-sort-header>
+              Status
+            </th>
+            <td
+              mat-cell
+              class="clikable"
+              (click)="onTableClick(anuncio)"
+              *matCellDef="let anuncio"
+            >
+              {{ anuncio.status | anuncioStatus }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+
+        <mat-paginator
+          [length]="totalElements"
+          [pageSize]="pageSize"
+          [pageSizeOptions]="[5, 10, 20]"
+          [pageIndex]="pageIndex"
+          (page)="onPageChange($event)"
+          showFirstLastButtons
+        >
+        </mat-paginator>
+      </div>
+    </mat-dialog-content>
+  </ng-template>
 </div>
