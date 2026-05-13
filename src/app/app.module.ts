@@ -35,7 +35,6 @@ import {
     ConfirmBoxInitializer
 } from '@costlydeveloper/ngx-awesome-popup';
 import { CalcularAnuncioComponent } from './anuncios/calcular-anuncio/calcular-anuncio.component';
-import { animation } from '@angular/animations';
 import { VendasDetailComponent } from './ordem/vendas/vendas-detail/vendas-detail.component';
 import { VendaStatusPipe } from './pipes/venda-status.pipe';
 import { EditarAnuncioComponent } from './anuncios/editar/editar-anuncio.component';
@@ -93,6 +92,7 @@ registerLocaleData(localePt);
         MatSortModule,
         BrowserAnimationsModule,
         MatExpansionModule,
+
 
     ]
 })

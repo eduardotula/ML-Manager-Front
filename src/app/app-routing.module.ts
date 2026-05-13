@@ -5,6 +5,7 @@ import { ListAnunciosComponent } from './anuncios/list-produtos/list-anuncios.co
 import { ListOrdensComponent } from './ordem/list-ordens/list-ordens.component';
 import { ListVendasComponent } from './ordem/vendas/list-vendas.component';
 import { ListMessagesComponent } from './mensagens/list-messages/list-messages.component';
+import { PromocoesComponent } from './promocoes/promocoes.component';
 
 const routes: Routes = [
   { path: "", component: ListAnunciosComponent},
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: "list-ordens", component: ListOrdensComponent},
   { path: "list-vendas", component: ListVendasComponent},
   { path: "anuncio-messages", component: ListMessagesComponent},
+  { path: "promocoes", component: PromocoesComponent},
 
 ];
 
