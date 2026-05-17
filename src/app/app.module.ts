@@ -10,7 +10,7 @@ import { CadastrarAnuncioComponent } from './anuncios/cadastrar/cadastrar-anunci
 import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
 import { ListOrdensComponent } from './ordem/list-ordens/list-ordens.component';
 import { ListAnunciosComponent } from './anuncios/list-produtos/list-anuncios.component';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -41,6 +41,7 @@ import { EditarAnuncioComponent } from './anuncios/editar/editar-anuncio.compone
 import { ListMessagesComponent } from './mensagens/list-messages/list-messages.component';
 import { copiarAnunciosComponent } from './anuncios/list-produtos/copiar-anuncios/copiar-anuncios.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { PromocoesComponent } from './promocoes/promocoes.component';
 
 registerLocaleData(localePt);
 
@@ -60,7 +61,8 @@ registerLocaleData(localePt);
         CalcularAnuncioComponent,
         VendasDetailComponent,
         ListMessagesComponent,
-        copiarAnunciosComponent
+        copiarAnunciosComponent,
+        PromocoesComponent
     ],
     providers: [AnuncioService,
         MercadoLivreService,

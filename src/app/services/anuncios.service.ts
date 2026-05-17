@@ -7,6 +7,7 @@ import { AnuncioSimple } from './models/AnuncioSimple';
 import { AnuncioSimulation } from './models/AnuncioSimulation';
 import { environment } from 'src/environments/environment';
 import { MercadoLivreAnuncio } from './models/MercadoLivreAnuncio';
+import { PaginationResponse } from './models/PaginationResponse';
 
 
 @Injectable({
@@ -121,5 +122,22 @@ export class AnuncioService extends CommonService{
     };
         return this.http.get<number>(this.url + `/${mlId}/last-frete`, {params}).pipe(catchError(this.handleError));
   }
+
+      listByFilters(page: number, userId: number, pageSize: number, includePaused: boolean,
+      filters?: {
+        descricao: string;
+        mlId: string;
+        sku: string;
+      },
+      ): Observable<PaginationResponse<Anuncio>>{
+      var params = {
+        "user-id": userId,
+        "pageSize": pageSize,
+        "page": page,
+        "include-paused": includePaused
+      }
+      Object.assign(params,filters);
+      return this.http.get<PaginationResponse<Anuncio>>(this.url + "/filters", {params}).pipe(catchError(this.handleError));
+    }
 
 }

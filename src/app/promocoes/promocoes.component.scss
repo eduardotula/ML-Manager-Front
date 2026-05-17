@@ -1,7 +1,62 @@
 .limit-content {
   height: calc(88vh - 24px);
-  overflow-x: scroll;
+  overflow: hidden;
   margin-top: 20px;
   margin-bottom: 20px;
   width: 90vw;
-  }
+  display: flex;
+  flex-direction: column;
+}
+
+.promocoes-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.table-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.sticky-paginator {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  z-index: 10;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background-color: #fafafa;
+  border-radius: 4px;
+}
+
+.info-label {
+  font-weight: 600;
+  min-width: 150px;
+  color: #333;
+}
+
+.info-value {
+  font-size: 0.9rem;
+  color: #666;
+  flex: 1;
+}
+
+.info-input {
+  flex: 1;
+  max-width: 150px;
+}
