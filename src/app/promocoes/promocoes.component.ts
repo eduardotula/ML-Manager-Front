@@ -11,6 +11,9 @@ import { UsersServices } from '../services/users.service';
 import { UserLSService } from '../services/local-storage/user-ls.service';
 import { PromocaoAnuncio } from '../services/models/PromocaoAnuncio';
 import { MatExpansionModule } from '@angular/material/expansion';
+import {MatRadioModule} from '@angular/material/radio';
+import { FormGroup } from '@angular/forms';
+
 
 
 
@@ -29,9 +32,9 @@ export class PromocoesComponent implements OnInit, AfterViewInit {
   pageSize: number = 50;
   pageSizeOptions = [50];
   totalElements: number = 0;
+  promocoesForm: FormGroup = new FormGroup({});
 
   displayedColumns: string[] = [
-    'select',
     'imagem',
     'descricao',
     'informacoes',
@@ -42,7 +45,6 @@ export class PromocoesComponent implements OnInit, AfterViewInit {
   dataSource: MatTableDataSource<PromocaoAnuncio> = new MatTableDataSource<PromocaoAnuncio>([]);
   currentUserId: number = 0;
   errorMsg: string = "";
-promo: any;
 
   constructor(
     private anuncioService: AnuncioService,
@@ -67,6 +69,7 @@ promo: any;
       next: (anuncios) => {
         this.dataSource.data = anuncios.results.map((anuncio: Anuncio) => new PromocaoAnuncio(anuncio, []));
         this.totalElements = anuncios.metaInfo.totalElements || 0;
+
         const requests: Observable<PromocaoItem[]>[] = [];
 
         anuncios.results.forEach((anuncio) => {

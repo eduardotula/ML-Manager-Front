@@ -5,7 +5,6 @@ export class PromocaoItem {
     public subType: string;
     public refId: string;
     public status: string;
-    public price: number;
     public originalPrice: number;
     public meliPercentage: number;
     public sellerPercentage: number;
@@ -18,7 +17,6 @@ export class PromocaoItem {
 
     public startDate: string;
     public finishDate: string;
-    public boo
 
     constructor(
         promotionMlId: string,
@@ -26,7 +24,6 @@ export class PromocaoItem {
         subType: string,
         refId: string,
         status: string,
-        price: number,
         originalPrice: number,
         meliPercentage: number,
         sellerPercentage: number,
@@ -42,7 +39,6 @@ export class PromocaoItem {
         this.subType = subType;
         this.refId = refId;
         this.status = status;
-        this.price = price;
         this.originalPrice = originalPrice;
         this.meliPercentage = meliPercentage;
         this.sellerPercentage = sellerPercentage;

@@ -42,6 +42,7 @@ import { ListMessagesComponent } from './mensagens/list-messages/list-messages.c
 import { copiarAnunciosComponent } from './anuncios/list-produtos/copiar-anuncios/copiar-anuncios.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { PromocoesComponent } from './promocoes/promocoes.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 registerLocaleData(localePt);
 
@@ -94,7 +95,7 @@ registerLocaleData(localePt);
         MatSortModule,
         BrowserAnimationsModule,
         MatExpansionModule,
-
+        MatRadioModule
 
     ]
 })
