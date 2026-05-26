@@ -96,6 +96,17 @@ export class AnuncioService extends CommonService{
     return this.http.get<any>(this.url + `simulation`, {params}).pipe(catchError(this.handleError));
   } 
 
+  simulatePrecoDesconto(custo: number, custoFrete: number, csosn: string, taxaMlPercentage: number, targetLucroPercentage: number): Observable<number> {
+    const params = {
+      "custo": custo,
+      "custo-frete": custoFrete,
+      "csosn": csosn,
+      "taxa-ml-percentage": taxaMlPercentage,
+      "target-lucro-percentage": targetLucroPercentage,
+    };
+    return this.http.get<number>(this.url + `simulation-preco-desconto`, { params }).pipe(catchError(this.handleError));
+  }
+
   listAllAnunciosWithMessages(userId: number): Observable<Anuncio[]>{
     var params ={
       "user-id": userId,

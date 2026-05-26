@@ -18,6 +18,8 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
+  /* limit height so the table can scroll inside the card */
+  max-height: calc(88vh - 160px);
 }
 
 .sticky-paginator {
@@ -30,14 +32,10 @@
 }
 
 .info-container {
-  display: flex;
-  flex-direction: column;
   gap: 12px;
 }
 
 .info-row {
-  display: flex;
-  align-items: center;
   gap: 8px;
   padding: 8px;
   background-color: #fafafa;
@@ -61,7 +59,6 @@
 .info-value {
   font-size: 0.9rem;
   color: #666;
-  flex: 1;
 }
 
 .info-input {
