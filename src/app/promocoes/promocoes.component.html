@@ -1,6 +1,11 @@
 <div class="container-container-fluid limit-content card mx-auto">
   <ngx-loading [show]="loading"></ngx-loading>
 
+  <!-- Exibição de mensagens de erro/sucesso -->
+  <div *ngIf="errorMsg" class="alert" [ngClass]="errorMsg.includes('sucesso') ? 'alert-success' : 'alert-danger'" role="alert">
+    {{ errorMsg }}
+  </div>
+
   <form [formGroup]="searchForm" class="search-form">
     <div class="bg-body-tertiary card stick-top">
       <div class="row justify-content-between">
@@ -62,7 +67,6 @@
                 <mat-expansion-panel-header>
                   <mat-panel-title>Promoções Disponiveis</mat-panel-title>
                                               <div class="col form-group" style="display: flex; align-items: flex-end;">
-                              <button class="btn btn-sm btn-primary" type="button">Calcular</button>
                             </div>
                 </mat-expansion-panel-header>
                 <div *ngIf="anuncioPromocao.promocoes.length === 0" class="info-row">

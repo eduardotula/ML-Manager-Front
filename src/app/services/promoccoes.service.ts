@@ -19,5 +19,18 @@ export class PromocoesService extends CommonService {
       .pipe(catchError(this.handleError));
   }
 
+  setOffer(anuncioId: number, userId: number, mlPromotionId: string, promotionType: string, dealPrice: number): Observable<void> {
+    var params = {
+      "userId": userId,
+      "mlPromotionId": mlPromotionId,
+      "promotionType": promotionType,
+      "dealPrice": dealPrice
+    };
+    return this.http
+      .post<void>(`${this.url}anuncio/${anuncioId}/`, params)
+      .pipe(catchError(this.handleError));
+  }
+
+
   
 }
