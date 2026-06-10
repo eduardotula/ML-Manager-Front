@@ -2,35 +2,61 @@
   <ngx-loading [show]="loading"></ngx-loading>
 
   <!-- Exibição de mensagens de erro/sucesso -->
-  <div *ngIf="errorMsg" class="alert" [ngClass]="errorMsg.includes('sucesso') ? 'alert-success' : 'alert-danger'" role="alert">
+  <div *ngIf="errorMsg" class="alert" [ngClass]="errorMsg.includes('sucesso') ? 'alert-success' : 'alert-danger'"
+    role="alert">
     {{ errorMsg }}
   </div>
 
-  <form [formGroup]="searchForm" class="search-form">
-    <div class="bg-body-tertiary card stick-top">
-      <div class="row justify-content-between">
-        <div class="col-auto">
-          <div class="row">
-            <div class="col-auto d-flex align-self-center" role="search" style="margin: 5px">
-              <input class="form-control me-2" type="number" placeholder="Margem objetivo %"
-                aria-label="Margem objetivo" formControlName="descricao">
-              <button class="btn btn-sm btn-primary" type="button" (click)="onCalcularMargemObjet()">Pesquisar</button>
-            </div>
-            <div class="col-12 mt-2">
-              <div class="text-danger small"
-                *ngIf="searchForm.get('descricao')?.invalid && (searchForm.get('descricao')?.touched || searchForm.get('descricao')?.dirty)">
-                <span *ngIf="searchForm.get('descricao')?.errors?.['required']">A margem objetivo é obrigatória.</span>
-                <span
-                  *ngIf="searchForm.get('descricao')?.errors?.['min'] || searchForm.get('descricao')?.errors?.['max']">Informe
-                  um valor entre 0 e 100.</span>
-              </div>
-            </div>
+  <div class="bg-body-tertiary card stick-top">
+    <div class="row justify-content-between">
+      <div class="col-auto">
+        <div class="row">
 
+          <div class="col d-flex align-self-center" role="search" style="margin: 5px">
+            <form [formGroup]="searchForm" class="search-form" style="width: 70%;">
+              <div class="card">
+                <div class="d-flex align-items-center justify-content-start">
+                  <input class="form-control me-2" style="margin: 5px; min-width: 300px;" type="text" placeholder="Descrição"
+                    aria-label="Descrição" formControlName="descricao">
+                  <input class="form-control me-2" style="margin: 5px; max-width: 150px;" type="text" placeholder="MLID" aria-label="MLID"
+                    formControlName="mlId">
+                  <button class="btn btn-sm btn-primary" style="margin: 5px;" (click)="populateTable(pageIndex)" type="button">Buscar</button>
+                </div>
+              </div>
+
+            </form>
+            <form [formGroup]="margemObjetivoForm" class="search-form" style="margin-left: 10px;">
+              <div class="card">
+                <div class="d-flex align-items-center justify-content-start">
+                  <input class="form-control " style="margin: 5px; min-width: 150px;" type="number" placeholder="Margem objetivo %"
+                    aria-label="Margem objetivo" formControlName="margemObjetivo">
+                  <button class="btn btn-sm btn-primary" style="margin: 5px;" type="button"
+                    (click)="onCalcularMargemObjet()">Calcular</button>
+                </div>
+              </div>
+            </form>
           </div>
+
+          <div class="col-12 mt-2">
+            <div class="text-danger small"
+              *ngIf="margemObjetivoForm.get('margemObjetivo')?.invalid && (margemObjetivoForm.get('margemObjetivo')?.touched || margemObjetivoForm.get('margemObjetivo')?.dirty)">
+              <span *ngIf="margemObjetivoForm.get('margemObjetivo')?.errors?.['required']">A margem objetivo é
+                obrigatória.</span>
+            </div>
+            <div class="text-danger small"
+              *ngIf="searchForm.invalid && (searchForm.get('descricao')?.touched || searchForm.get('descricao')?.dirty || searchForm.get('mlid')?.touched || searchForm.get('mlid')?.dirty)">
+              <span *ngIf="searchForm.errors?.['atLeastOneRequired']">Preencha ao menos um dos campos: Descrição ou
+                MLID.</span>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
-  </form>
+
+  </div>
+
+
 
   <form [formGroup]="promocoesForm" (ngSubmit)="onSave()" novalidate>
     <div class="table-wrapper">
@@ -66,8 +92,8 @@
               <mat-expansion-panel [expanded]="true">
                 <mat-expansion-panel-header>
                   <mat-panel-title>Promoções Disponiveis</mat-panel-title>
-                                              <div class="col form-group" style="display: flex; align-items: flex-end;">
-                            </div>
+                  <div class="col form-group" style="display: flex; align-items: flex-end;">
+                  </div>
                 </mat-expansion-panel-header>
                 <div *ngIf="anuncioPromocao.promocoes.length === 0" class="info-row">
                   <span class="info-label text-muted">Nenhuma promoção</span>
@@ -77,11 +103,14 @@
                   <mat-radio-group formControlName="selectedPromoId" aria-label="Promoções">
                     <div formGroupName="values">
                       <div *ngFor="let promocao of anuncioPromocao.promocoes; let idxPromo = index">
-                        <ng-container class="container " *ngIf="promocao.name.length > 0">
+                        <ng-container class="container ">
                           <div class=" row justify-content-center align-items-center info-row">
                             <mat-radio-button class="col-1" color="warn"
                               [value]="calculateKey(anuncioPromocao.anuncio.mlId, promocao.promotionMlId)"></mat-radio-button>
-                            <span class="col-3 info-label">{{ promocao.name }}</span>
+                            <div class="col-3 info-label">
+                              <span class="">{{ promocao.name }}</span>
+                              <span *ngIf="promocao.status === 'started'" class="badge bg-secondary ms-2">Ativa</span>
+                            </div>
                             <div class="col-2 info-value">
                               <div class="">Sugerido:</div>
                               <div class="">R$ {{ promocao.suggestedDiscountedPrice | number: '1.2-2' }}</div>
@@ -131,12 +160,17 @@
       </table>
     </div>
     <div class="row">
+
       <div class="col">
-        <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons [length]="totalElements"
-          [pageSize]="pageSize" [pageIndex]="pageIndex" (page)="onPageChange($event)"
-          class="mt-3 sticky-paginator"></mat-paginator>
+        <input matInput type="number" name="goToPage" [(ngModel)]="goToPage" [ngModelOptions]="{standalone: true}">
+        <button class="btn btn-sm btn-secondary ms-2" type="button" (click)="updateGoToPage()">Go</button>
+        <mat-paginator showFirstLastButtons [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex"
+          (page)="onPageChange($event)" class="mt-3 sticky-paginator">
+        </mat-paginator>
+
       </div>
       <div class="col ">
+
         <button class="btn btn-sm btn-primary" type="submit">Salvar</button>
       </div>
     </div>

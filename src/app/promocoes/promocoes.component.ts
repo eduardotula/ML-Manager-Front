@@ -25,15 +25,17 @@ import { FormGroup, FormBuilder, FormArray, FormControl, Validators, AbstractCon
 
   
 })
-export class PromocoesComponent implements OnInit, AfterViewInit {
+export class PromocoesComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   pageIndex: number = 0;
-  pageSize: number = 50;
-  pageSizeOptions = [50];
+  pageSize: number = 20;
+  goToPage: number = 0;
+  pageSizeOptions = [20];
   totalElements: number = 0;
   searchForm: FormGroup = new FormGroup({});
+  margemObjetivoForm: FormGroup = new FormGroup({});
   promocoesForm: FormGroup = new FormGroup({ rows: new FormArray([]) });
 
   displayedColumns: string[] = [
@@ -59,23 +61,26 @@ export class PromocoesComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.currentUserId = this.userLsService.getCurrentUser();
     this.searchForm = this.fb.group({
-      descricao: ['', [Validators.required, Validators.min(0), Validators.max(100)]]
+      descricao: [''],
+      mlId: ['']
+    }, { validators: this.atLeastOneFieldValidator });
+    this.margemObjetivoForm = this.fb.group({
+      margemObjetivo: ['', [Validators.required, Validators.min(0), Validators.max(100)]]
     });
     this.promocoesForm = this.fb.group({
       rows: this.fb.array([])
     });
-    this.populateTable();
-  }
-
-  ngAfterViewInit(): void {
+    this.populateTable(this.pageIndex);
     this.dataSource.paginator = this.paginator;
+
   }
 
-  populateTable(): void {
+  populateTable(page: number): void {
 
     this.loading = true;
-
-    this.anuncioService.listByFilters(0, this.currentUserId, this.pageSize, false).subscribe({
+      const descricao = this.searchForm.get('descricao')?.value;
+      const mlId = this.searchForm.get('mlId')?.value;
+    this.anuncioService.listByFilters(page, this.currentUserId, this.pageSize, false, { descricao: descricao, mlId: mlId }).subscribe({
       next: (anuncios) => {
         this.dataSource.data = anuncios.results.map((anuncio: Anuncio) => new PromocaoAnuncio(anuncio, []));
         this.totalElements = anuncios.metaInfo.totalElements || 0;
@@ -113,6 +118,7 @@ export class PromocoesComponent implements OnInit, AfterViewInit {
             this.buildFormRows();
 
             this.loading = false;
+
           },
           error: (error) => {
             this.loading = false;
@@ -185,6 +191,17 @@ export class PromocoesComponent implements OnInit, AfterViewInit {
     return null;
   }
 
+  private atLeastOneFieldValidator(control: AbstractControl): {[key: string]: any} | null {
+    const descricao = control.get('descricao')?.value;
+    const mlId = control.get('mlid')?.value;
+
+    if ((descricao && descricao.trim() !== '') || (mlId && mlId.trim() !== '')) {
+      return null;
+    }
+
+    return { atLeastOneRequired: true };
+  }
+
   getRows(): FormArray {
     return this.promocoesForm.get('rows') as FormArray;
   }
@@ -200,6 +217,15 @@ export class PromocoesComponent implements OnInit, AfterViewInit {
   onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
+    this.populateTable(this.pageIndex);
+  }
+
+  updateGoToPage(): void{
+    if (this.goToPage < 1 || this.goToPage > Math.ceil(this.totalElements / this.pageSize)) {
+      return;
+    }
+    this.pageIndex = this.goToPage - 1;
+    this.populateTable(this.pageIndex);
   }
 
   calculateKey(mlId: string, promoId: string): string {

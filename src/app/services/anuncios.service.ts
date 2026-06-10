@@ -136,9 +136,9 @@ export class AnuncioService extends CommonService{
 
       listByFilters(page: number, userId: number, pageSize: number, includePaused: boolean,
       filters?: {
-        descricao: string;
-        mlId: string;
-        sku: string;
+        descricao?: string;
+        mlId?: string;
+        sku?: string;
       },
       ): Observable<PaginationResponse<Anuncio>>{
       var params = {
